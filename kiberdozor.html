@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КиберДозор — Защити себя в сети</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060b14;
+    --surface: #0d1825;
+    --surface2: #111f30;
+    --cyan: #00f5ff;
+    --green: #00ff88;
+    --red: #ff3860;
+    --yellow: #ffd700;
+    --text: #cde8ff;
+    --muted: #5a7a99;
+    --border: rgba(0,245,255,0.15);
+    --glow: 0 0 20px rgba(0,245,255,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,245,255,0.015) 2px, rgba(0,245,255,0.015) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(6,11,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: var(--glow);
+    letter-spacing: 2px;
+  }
+  .logo span { color: var(--green); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--cyan); }
+
+  #hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,245,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  }
+
+  .shield-icon {
+    font-size: 5rem;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 0 30px rgba(0,245,255,0.6));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    animation: slideUp 0.8s ease 0.2s both;
+  }
+  h1 .line1 { color: #fff; }
+  h1 .line2 {
+    color: var(--cyan);
+    text-shadow: 0 0 30px rgba(0,245,255,0.5);
+  }
+
+  .hero-sub {
+    max-width: 560px;
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0 auto 40px;
+    animation: slideUp 0.8s ease 0.4s both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: slideUp 0.8s ease 0.6s both;
+  }
+
+  .btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--cyan);
+    color: var(--bg);
+    box-shadow: 0 0 30px rgba(0,245,255,0.4);
+  }
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 50px rgba(0,245,255,0.7);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+  }
+  .btn-outline:hover {
+    background: rgba(0,245,255,0.1);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 72px;
+    animation: fadeIn 1s ease 1s both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--cyan);
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .section-title span { color: var(--cyan); }
+  .section-desc {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 60px;
+  }
+
+  .threats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .threat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .threat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--card-color, var(--cyan)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .threat-card:hover {
+    border-color: var(--card-color, var(--cyan));
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+  .threat-card:hover::before { opacity: 1; }
+
+  .threat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .threat-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .threat-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .expand-content {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .expand-content.active { display: block; }
+  .expand-content h4 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+  .expand-content ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .expand-content li {
+    font-size: 0.85rem;
+    color: var(--text);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .expand-content li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+  }
+  .read-more {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 8px 16px;
+    margin-top: 12px;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .read-more:hover { background: rgba(0,245,255,0.1); }
+
+  #quiz-section {
+    padding: 100px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .quiz-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+  }
+
+  .quiz-progress {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .quiz-category {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .quiz-question {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.5;
+    margin-bottom: 36px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .quiz-option {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    color: var(--text);
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'Exo 2', sans-serif;
+  }
+  .option-letter {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    width: 28px; height: 28px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--cyan); background: rgba(0,245,255,0.05); }
+  .quiz-option:hover:not(:disabled) .option-letter { background: var(--cyan); color: var(--bg); }
+  .quiz-option.correct { border-color: var(--green); background: rgba(0,255,136,0.08); }
+  .quiz-option.correct .option-letter { background: var(--green); color: var(--bg); }
+  .quiz-option.wrong { border-color: var(--red); background: rgba(255,56,96,0.08); }
+  .quiz-option.wrong .option-letter { background: var(--red); color: #fff; }
+  .quiz-option:disabled { cursor: default; }
+
+  .quiz-feedback {
+    padding: 16px 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--green); }
+  .quiz-feedback.wrong-fb { background: rgba(255,56,96,0.1); border: 1px solid rgba(255,56,96,0.3); color: #ff7a9a; }
+
+  .btn-next {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    display: none;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px rgba(0,245,255,0.3);
+  }
+  .btn-next.show { display: inline-block; }
+  .btn-next:hover { background: #fff; box-shadow: 0 0 40px rgba(0,245,255,0.6); }
+
+  .quiz-result { text-align: center; display: none; animation: fadeIn 0.5s ease; }
+  .quiz-result.show { display: block; }
+  .result-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 40px rgba(0,245,255,0.5);
+    margin-bottom: 8px;
+  }
+  .result-label { font-size: 0.8rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px; }
+  .result-message { font-size: 1.2rem; color: #fff; margin-bottom: 12px; }
+  .result-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 40px; line-height: 1.6; }
+
+  .result-badges { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+  .badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge span { font-size: 1.2rem; }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    transition: transform 0.2s;
+  }
+  .tip-card:hover { transform: translateY(-3px); }
+  .tip-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(0,245,255,0.15);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .tip-card h3 { font-family: 'Orbitron', monospace; font-size: 0.9rem; color: var(--cyan); margin-bottom: 10px; }
+  .tip-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+
+  .simulator {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .sim-header {
+    background: #1a2a3a;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sim-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .sim-dot.r { background: #ff5f57; }
+  .sim-dot.y { background: #febc2e; }
+  .sim-dot.g { background: #28c840; }
+  .sim-url {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-left: 12px;
+    flex: 1;
+    font-family: monospace;
+  }
+  .url-warning { color: var(--red) !important; }
+  .sim-body { padding: 32px; }
+  .email-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .email-card:hover { border-color: var(--cyan); }
+  .email-from { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+  .email-from strong { color: var(--text); }
+  .email-subject { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .email-preview { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .email-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .email-card.revealed .email-badge { opacity: 1; }
+  .badge-safe { background: rgba(0,255,136,0.2); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+  .badge-danger { background: rgba(255,56,96,0.2); color: var(--red); border: 1px solid rgba(255,56,96,0.3); }
+
+  .sim-instruction {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+    padding: 12px;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--cyan);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 12px 20px; }
+    nav ul { display: none; }
+    section { padding: 60px 20px; }
+    #quiz-section { padding: 60px 20px; }
+    .quiz-container { padding: 28px 20px; }
+    .hero-stats { gap: 24px; }
+    .stat-num { font-size: 1.5rem; }
+    footer { padding: 30px 20px; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav>
+  <div class="logo">Кибер<span>Дозор</span></div>
+  <ul>
+    <li><a href="#threats">Угрозы</a></li>
+    <li><a href="#quiz-section">Тест</a></li>
+    <li><a href="#simulator">Симулятор</a></li>
+    <li><a href="#tips">Советы</a></li>
+  </ul>
+</nav>
+
+<div id="hero">
+  <div class="hero-orb"></div>
+  <div class="shield-icon">🛡️</div>
+  <h1>
+    <div class="line1">Безопасность</div>
+    <div class="line2">в интернете</div>
+  </h1>
+  <p class="hero-sub">Научись распознавать вирусы и мошенников в сети. Теория и тесты для всех, кто хочет больше знать о своей безопасности в интернете.</p>
+  <div class="hero-btns">
+    <a href="#quiz-section" class="btn btn-primary">Пройти тест</a>
+    <a href="#threats" class="btn btn-outline">Узнать об угрозах</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num" id="counter1">0</div>
+      <div class="stat-label">Видов угроз</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="counter2">0</div>
+      <div class="stat-label">Вопросов в тесте</div>
+    </div>
+  </div>
+</div>
+
+<section id="threats">
+  <div class="fade-in">
+    <div class="section-label">// Модуль 01</div>
+    <h2 class="section-title">Знай <span>своего врага</span></h2>
+    <p class="section-desc">Каждый день в интернете появляются новые угрозы. Нажми на карточку, чтобы узнать, как защититься.</p>
+  </div>
+  <div class="threats-grid fade-in">
+
+    <div class="threat-card" style="--card-color: #ff3860;">
+      <h3>Компьютерные вирусы</h3>
+      <p>Вредоносные программы, которые копируют себя и распространяются на другие устройства, уничтожая данные и нарушая работу системы.</p>
+      <div class="expand-content" id="virus-info">
+        <h4>🔍 Как распознать?</h4>
+        <ul>
+          <li>Устройство резко замедлилось без причины</li>
+          <li>Программы запускаются и закрываются сами</li>
+          <li>Появляются незнакомые файлы или иконки</li>
+          <li>Антивирус неожиданно отключился</li>
+          <li>Интернет стал значительно медленнее</li>
+        </ul>
+        <h4 style="margin-top:16px">🛡️ Как защититься?</h4>
+        <ul>
+          <li>Установи лицензионный антивирус</li>
+          <li>Не скачивай файлы с незнакомых сайтов</li>
+          <li>Регулярно обновляй операционную систему</li>
+          <li>Проверяй флешки перед использованием</li>
+        </ul>
+      </div>
+      <button class="read-more" onclick="toggleInfo('virus-info', this)">Подробнее ▸</button>
+    </div>
+
+    <div class="threat-card" style="--card-color: #ff8c00;">
+      <h3>Фишинг</h3>
+      <p>Мошенники создают поддельные сайты и рассылают письма, притворяясь банками, магазинами и госструктурами, чтобы украсть твои данные.</p>
+      <div class="expand-content" id="phish-info">
+        <h4>🔍 Как распознать?</h4>
+        <ul>
+          <li>Адрес сайта немного отличается от настоящего</li>
+          <li>Письмо создаёт срочность: «Ваш аккаунт заблокирован!»</li>
+          <li>Просят ввести пароль или данные карты</li>
+          <li>Нет замка HTTPS в адресной строке</li>
+          <li>Странный отправитель письма</li>
+        </ul>
+        <h4 style="margin-top:16px">🛡️ Как защититься?</h4>
+        <ul>
+          <li>Всегда проверяй адрес сайта в строке браузера</li>
+          <li>Не переходи по ссылкам из подозрительных писем</li>
+          <li>Используй двухфакторную аутентификацию</li>
+          <li>Сохрани настоящие сайты в закладки</li>
+        </ul>
+      </div>
+      <button class="read-more" onclick="toggleInfo('phish-info', this)">Подробнее ▸</button>
+    </div>
+
+    <div class="threat-card" style="--card-color: #9b59b6;">
+      <h3>Программы-вымогатели</h3>
+      <p>Ransomware — вирусы, которые шифруют все твои файлы и требуют выкуп за их возврат. Жертвами становятся и обычные пользователи.</p>
+      <div class="expand-content" id="ransom-info">
+        <h4>🔍 Как распознать?</h4>
+        <ul>
+          <li>Файлы перестали открываться, изменились расширения</li>
+          <li>На экране появилось требование выкупа</li>
+          <li>Рабочий стол изменился сам</li>
+          <li>Устройство сильно нагрелось и тормозит</li>
+        </ul>
+        <h4 style="margin-top:16px">🛡️ Как защититься?</h4>
+        <ul>
+          <li>Делай резервные копии данных на отдельный диск</li>
+          <li>Никогда не открывай вложения в подозрительных письмах</li>
+          <li>Не платить выкуп — нет гарантии возврата файлов</li>
+          <li>Сразу отключи компьютер от сети при заражении</li>
+        </ul>
+      </div>
+      <button class="read-more" onclick="toggleInfo('ransom-info', this)">Подробнее ▸</button>
+    </div>
+
+    <div class="threat-card" style="--card-color: #00f5ff;">
+      <h3>Социальная инженерия</h3>
+      <p>Мошенники манипулируют людьми психологически: звонят от имени банка, «службы безопасности» или даже твоих друзей, чтобы получить данные.</p>
+      <div class="expand-content" id="social-info">
+        <h4>🔍 Как распознать?</h4>
+        <ul>
+          <li>Незнакомый создаёт панику и срочность</li>
+          <li>Просят сообщить код из SMS «для защиты»</li>
+          <li>Предлагают переводы, выигрыши, «помощь»</li>
+          <li>Звонят от имени «службы безопасности»</li>
+        </ul>
+        <h4 style="margin-top:16px">🛡️ Как защититься?</h4>
+        <ul>
+          <li>Никому не сообщай коды из SMS и пароли</li>
+          <li>Положи трубку и перезвони в банк сам</li>
+          <li>Предупреди родителей о подозрительном звонке</li>
+          <li>Помни: настоящий банк не просит CVV-код</li>
+        </ul>
+      </div>
+      <button class="read-more" onclick="toggleInfo('social-info', this)">Подробнее ▸</button>
+    </div>
+
+    <div class="threat-card" style="--card-color: #00ff88;">
+      <h3>Шпионское ПО</h3>
+      <p>Spyware — программы, которые тайно следят за тобой: записывают нажатия клавиш, делают скриншоты и крадут пароли в фоновом режиме.</p>
+      <div class="expand-content" id="spy-info">
+        <h4>🔍 Как распознать?</h4>
+        <ul>
+          <li>Аккаунты взломаны без твоего ведома</li>
+          <li>Камера или микрофон активны без причины</li>
+          <li>Данные расходуются быстрее обычного</li>
+          <li>Батарея садится намного быстрее</li>
+        </ul>
+        <h4 style="margin-top:16px">🛡️ Как защититься?</h4>
+        <ul>
+          <li>Проверяй разрешения всех установленных приложений</li>
+          <li>Используй уникальные пароли для каждого сайта</li>
+          <li>Загружай приложения только из официальных магазинов</li>
+          <li>Закрывай камеру заглушкой, когда не используешь</li>
+        </ul>
+      </div>
+      <button class="read-more" onclick="toggleInfo('spy-info', this)">Подробнее ▸</button>
+    </div>
+
+    <div class="threat-card" style="--card-color: #ffd700;">
+      <h3>Онлайн-мошенничество</h3>
+      <p>Фейковые магазины, ложные конкурсы, мошенники в соцсетях — они обещают выигрыши и товары, но берут деньги и исчезают.</p>
+      <div class="expand-content" id="fraud-info">
+        <h4>🔍 Как распознать?</h4>
+        <ul>
+          <li>Цена слишком низкая, как будто неправдоподобная</li>
+          <li>Просят предоплату на карту частного лица</li>
+          <li>Нет отзывов или они явно фальшивые</li>
+          <li>«Ты выиграл приз!» — хотя ты не участвовал</li>
+        </ul>
+        <h4 style="margin-top:16px">🛡️ Как защититься?</h4>
+        <ul>
+          <li>Покупай только в проверенных магазинах</li>
+          <li>Проверяй возраст домена и отзывы сайта</li>
+          <li>Не переводи деньги незнакомцам</li>
+          <li>Если «выиграл» — это 100% мошенничество</li>
+        </ul>
+      </div>
+      <button class="read-more" onclick="toggleInfo('fraud-info', this)">Подробнее ▸</button>
+    </div>
+
+  </div>
+</section>
+
+<section id="quiz-section">
+  <div class="fade-in">
+    <div class="section-label">// Модуль 02</div>
+    <h2 class="section-title">Проверь свои <span>знания</span></h2>
+    <p class="section-desc">10 вопросов, которые покажут, насколько хорошо ты защищён в интернете.</p>
+  </div>
+  <div class="quiz-container fade-in" id="quiz-box">
+    <div id="quiz-body">
+      <div class="quiz-progress">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="progress-text" id="progress-text">0 / 10</div>
+      </div>
+      <div class="quiz-category" id="quiz-category"></div>
+      <div class="quiz-question" id="quiz-question"></div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Следующий вопрос →</button>
+    </div>
+    <div class="quiz-result" id="quiz-result">
+      <div class="result-score" id="result-score"></div>
+      <div class="result-label">правильных ответов</div>
+      <div class="result-message" id="result-message"></div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="result-badges" id="result-badges"></div>
+      <button class="btn btn-primary" onclick="restartQuiz()">Пройти снова</button>
+    </div>
+  </div>
+</section>
+
+<section id="simulator">
+  <div class="fade-in">
+    <div class="section-label">// Модуль 03</div>
+    <h2 class="section-title">Симулятор <span>фишинга</span></h2>
+    <p class="section-desc">Нажми на письмо — узнай, настоящее оно или фишинговое. Тренируй свою бдительность!</p>
+  </div>
+  <div class="simulator fade-in">
+    <div class="sim-header">
+      <div class="sim-dot r"></div>
+      <div class="sim-dot y"></div>
+      <div class="sim-dot g"></div>
+      <div class="sim-url" id="sim-url">mail.example.com</div>
+    </div>
+    <div class="sim-body">
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:20px;">📬 Входящие (4 сообщения) — нажми на каждое письмо, чтобы определить его тип:</p>
+
+      <div class="email-card" id="email1" onclick="revealEmail(1)">
+        <div class="email-from">От: <strong>noreply@sberbank.ru</strong> · 10:45</div>
+        <div class="email-subject">✅ Ваш перевод прошёл успешно</div>
+        <div class="email-preview">Перевод на сумму 500 ₽ выполнен. Детали операции доступны в вашем личном кабинете по кнопке ниже...</div>
+        <div class="email-badge badge-safe" id="badge1">✓ БЕЗОПАСНО</div>
+      </div>
+
+      <div class="email-card" id="email2" onclick="revealEmail(2)">
+        <div class="email-from">От: <strong>security@sber-bank-alert.ru</strong> · 11:02</div>
+        <div class="email-subject">⚠️ СРОЧНО! Ваш аккаунт заблокирован!</div>
+        <div class="email-preview">Мы обнаружили подозрительную активность! Немедленно подтвердите данные карты, иначе ваш счёт будет заморожен навсегда!</div>
+        <div class="email-badge badge-danger" id="badge2">⚠ ФИШИНГ!</div>
+      </div>
+
+      <div class="email-card" id="email3" onclick="revealEmail(3)">
+        <div class="email-from">От: <strong>no-reply@gosuslugi.ru</strong> · 12:30</div>
+        <div class="email-subject">📋 Ваше заявление принято в обработку</div>
+        <div class="email-preview">Заявление №2024-887432 принято. Срок рассмотрения — 10 рабочих дней. Статус можно отслеживать в личном кабинете на gosuslugi.ru...</div>
+        <div class="email-badge badge-safe" id="badge3">✓ БЕЗОПАСНО</div>
+      </div>
+
+      <div class="email-card" id="email4" onclick="revealEmail(4)">
+        <div class="email-from">От: <strong>prize@vk-winner2024.com</strong> · 13:15</div>
+        <div class="email-subject">🎉 Вы выиграли iPhone 16 Pro! Заберите приз!</div>
+        <div class="email-preview">Поздравляем! Вы стали 1 000 000-м пользователем ВКонтакте! Для получения приза введите данные карты для оплаты доставки (1 ₽)...</div>
+        <div class="email-badge badge-danger" id="badge4">⚠ МОШЕННИЧЕСТВО!</div>
+      </div>
+
+      <div class="sim-instruction" id="sim-instruction">👆 Нажимай на письма, чтобы проверить их</div>
+    </div>
+  </div>
+</section>
+
+<section id="tips">
+  <div class="fade-in">
+    <div class="section-label">// Модуль 04</div>
+    <h2 class="section-title">9 правил <span>кибербезопасности</span></h2>
+    <p class="section-desc">Запомни эти правила — они защитят тебя и твоих близких от большинства угроз.</p>
+  </div>
+  <div class="tips-grid fade-in">
+    <div class="tip-card">
+      <div class="tip-num">01</div>
+      <h3>Сложные пароли</h3>
+      <p>Используй уникальный пароль для каждого сайта: минимум 12 символов, буквы, цифры и знаки. Менеджер паролей поможет не запутаться.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">02</div>
+      <h3>Двойная защита</h3>
+      <p>Включи двухфакторную аутентификацию (2FA) везде, где это возможно. Это второй замок на двери твоего аккаунта.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">03</div>
+      <h3>Обновляй всё</h3>
+      <p>Регулярно обновляй систему, приложения и браузер. Обновления закрывают дыры, через которые проникают вирусы.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">04</div>
+      <h3>Проверяй ссылки</h3>
+      <p>Перед кликом наведи на ссылку — внизу экрана увидишь настоящий адрес. Один лишний символ в адресе — признак мошенников.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">05</div>
+      <h3>Антивирус — друг</h3>
+      <p>Установи надёжный антивирус и не отключай его. Он работает в фоне и защищает в режиме реального времени.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">06</div>
+      <h3>Осторожно с Wi-Fi</h3>
+      <p>В кафе и торговых центрах не входи в банки и не вводи пароли. Публичный Wi-Fi могут перехватывать злоумышленники.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">07</div>
+      <h3>Береги личные данные</h3>
+      <p>Не публикуй в интернете адрес, телефон, данные паспорта. Каждая деталь может быть использована против тебя.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">08</div>
+      <h3>Делай резервные копии</h3>
+      <p>Важные файлы копируй на внешний диск или в облако. Если вирус уничтожит данные — у тебя будет запасной вариант.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-num">09</div>
+      <h3>Никаких кодов незнакомцам</h3>
+      <p>Никто — ни банк, ни «служба безопасности» — никогда не попросит у тебя код из SMS по телефону. Это всегда мошенники.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">КиберДозор</div>
+</footer>
+
+<script>
+const questions = [
+  {
+    category: "Вирусы",
+    q: "Ты скачал бесплатную игру с незнакомого сайта. После установки компьютер стал тормозить, а антивирус — выключаться. Что, скорее всего, произошло?",
+    options: ["Компьютер просто устарел", "Ты заразился вредоносным ПО", "Нужно переустановить игру", "Проблема с интернетом"],
+    correct: 1,
+    feedback: "✅ Верно! Самовыключение антивируса и резкое замедление — классические признаки заражения вредоносным ПО. Скачивай программы только с официальных сайтов!"
+  },
+  {
+    category: "Фишинг",
+    q: "Ты получил письмо от «Сбербанка» с просьбой срочно подтвердить данные карты по ссылке. Адрес отправителя: security@sber-bank24.net. Что делать?",
+    options: ["Перейти по ссылке и ввести данные", "Ответить на письмо и уточнить", "Переслать другу, пусть проверит", "Удалить письмо — это фишинг"],
+    correct: 3,
+    feedback: "✅ Правильно! Настоящий Сбербанк пишет только с @sberbank.ru. Адрес «sber-bank24.net» — явная подделка. Данные карты банк никогда не просит по email!"
+  },
+  {
+    category: "Пароли",
+    q: "Какой из этих паролей является самым надёжным?",
+    options: ["qwerty123", "Дата рождения мамы", "kD#9mL$vX2!pQ", "password"],
+    correct: 2,
+    feedback: "✅ Верно! Надёжный пароль — длинный (12+ символов), содержит заглавные и строчные буквы, цифры и специальные символы. Личные данные угадать легко!"
+  },
+  {
+    category: "Социальная инженерия",
+    q: "Тебе звонит «сотрудник банка» и говорит, что твоя карта заблокирована. Чтобы разблокировать, нужно назвать код из SMS. Что делать?",
+    options: ["Положить трубку и самому позвонить в банк", "Назвать код — это же банк!", "Попросить перезвонить позже", "Назвать только последние цифры"],
+    correct: 0,
+    feedback: "✅ Отлично! Настоящий банк НИКОГДА не просит коды из SMS по телефону. Это классическая схема мошенников. Всегда сам звони на официальный номер банка!"
+  },
+  {
+    category: "Безопасный интернет",
+    q: "Ты подключился к бесплатному Wi-Fi в кафе. Что НЕЛЬЗЯ делать в публичной сети?",
+    options: ["Читать новости", "Входить в интернет-банк и вводить пароли", "Смотреть видео", "Искать информацию в поисковике"],
+    correct: 1,
+    feedback: "✅ Правильно! В публичном Wi-Fi трафик может перехватываться. Никогда не вводи пароли, данные карт и личную информацию в открытых сетях без VPN!"
+  },
+  {
+    category: "Программы-вымогатели",
+    q: "Ты открыл вложение из письма, и теперь все файлы не открываются, а на экране написано: «Заплати 500$ за восстановление». Как правильно поступить?",
+    options: ["Заплатить — быстрее всего", "Попробовать удалить файлы с требованием", "Переустановить только заражённые программы", "Отключить компьютер от сети и обратиться к специалисту"],
+    correct: 3,
+    feedback: "✅ Верно! Платить выкуп — нет гарантии возврата файлов. Немедленно отключи от сети, чтобы остановить распространение, и обратись к специалисту или родителям!"
+  },
+  {
+    category: "Онлайн-мошенничество",
+    q: "В соцсети тебе написали, что ты выиграл iPhone. Нужно только оплатить доставку 1 ₽. Что это?",
+    options: ["Мошенничество — данные карты украдут", "Реальный розыгрыш, повезло!", "Акция от производителя", "Зависит от того, кто пишет"],
+    correct: 0,
+    feedback: "✅ Отлично! Это классическая схема мошенников. Они получают данные карты якобы «для оплаты 1 ₽» и снимают все деньги. Ты не участвовал в розыгрыше = ты не выиграл!"
+  },
+  {
+    category: "Приватность",
+    q: "Какие данные НЕЛЬЗЯ публиковать в открытом профиле в соцсетях?",
+    options: ["Любимые фильмы", "Хобби и интересы", "Домашний адрес и номер телефона", "Аватар и имя"],
+    correct: 2,
+    feedback: "✅ Правильно! Домашний адрес, телефон, паспортные данные — это конфиденциальная информация. Мошенники и злоумышленники могут использовать её против тебя."
+  },
+  {
+    category: "Двухфакторная защита",
+    q: "Что такое двухфакторная аутентификация (2FA) и зачем она нужна?",
+    options: ["Два разных пароля для одного аккаунта", "Подтверждение входа вторым способом — SMS или приложением", "Секретный вопрос при регистрации", "Вход с двух устройств одновременно"],
+    correct: 1,
+    feedback: "✅ Верно! 2FA требует не только пароль, но и второй фактор (SMS-код, приложение). Даже если пароль украден — без второго фактора в аккаунт не войти!"
+  },
+  {
+    category: "Распознавание угроз",
+    q: "Друг прислал тебе ссылку «Посмотри, это фото с тобой :)». Ты не помнишь, чтобы фотографировались. Что делать?",
+    options: ["Сразу перейти — интересно же!", "Переслать ссылку другим друзьям", "Перейти, но не вводить данные", "Уточнить у друга лично, не переходя по ссылке"],
+    correct: 3,
+    feedback: "✅ Правильно! Аккаунт друга мог быть взломан. Такие сообщения — популярный способ распространения вирусов и фишинга. Сначала спроси друга лично или позвони!"
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('quiz-category').textContent = q.category;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('progress-fill').style.width = (currentQ / questions.length * 100) + '%';
+  document.getElementById('progress-text').textContent = currentQ + ' / ' + questions.length;
+
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = '<span class="option-letter">' + letters[i] + '</span>' + opt;
+    btn.onclick = () => selectAnswer(i);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('quiz-feedback').className = 'quiz-feedback';
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('btn-next').className = 'btn-next';
+  answered = false;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const opts = document.querySelectorAll('.quiz-option');
+
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    if (i === idx && i !== q.correct) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.textContent = q.feedback;
+  if (idx === q.correct) {
+    score++;
+    fb.className = 'quiz-feedback correct-fb show';
+  } else {
+    fb.className = 'quiz-feedback wrong-fb show';
+    const stripped = q.feedback.replace(/^.\s+\S+\s+/, '');
+    fb.textContent = '❌ Не верно. ' + stripped.charAt(0).toUpperCase() + stripped.slice(1);
+  }
+
+  document.getElementById('btn-next').className = 'btn-next show';
+  document.getElementById('btn-next').textContent = currentQ < questions.length - 1 ? 'Следующий вопрос →' : 'Посмотреть результат →';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-body').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const result = document.getElementById('quiz-result');
+  result.className = 'quiz-result show';
+  document.getElementById('result-score').textContent = score + '/' + questions.length;
+
+  let msg, sub, badges;
+  if (score === 10) {
+    msg = '🏆 Ты настоящий КиберДозорный!';
+    sub = 'Отличный результат! Ты знаешь всё об онлайн-угрозах и умеешь защищать себя. Расскажи друзьям о платформе!';
+    badges = [['🛡️', 'Эксперт безопасности'], ['🔍', 'Детектив угроз'], ['⚡', 'Мастер фишинга']];
+  } else if (score >= 7) {
+    msg = '💪 Отличная защита!';
+    sub = 'Ты хорошо разбираешься в кибербезопасности. Повтори материал по темам, где ошибся, и станешь настоящим экспертом!';
+    badges = [['🛡️', 'Защитник сети'], ['📚', 'Продолжай учиться']];
+  } else if (score >= 5) {
+    msg = '📖 Хороший старт!';
+    sub = 'Базовые знания есть, но угрозы становятся сложнее. Изучи раздел «Угрозы» и пройди тест снова!';
+    badges = [['📖', 'Начинающий'], ['🎯', 'Учись дальше']];
+  } else {
+    msg = '⚠️ Нужно учиться!';
+    sub = 'Пока ты уязвим для многих угроз. Прочитай все карточки в разделе «Угрозы» — это важно для твоей защиты!';
+    badges = [['📚', 'Изучи материал'], ['🔄', 'Попробуй снова']];
+  }
+
+  document.getElementById('result-message').textContent = msg;
+  document.getElementById('result-sub').textContent = sub;
+  const bd = document.getElementById('result-badges');
+  bd.innerHTML = badges.map(b => '<div class="badge"><span>' + b[0] + '</span>' + b[1] + '</div>').join('');
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0; answered = false;
+  document.getElementById('quiz-result').className = 'quiz-result';
+  document.getElementById('quiz-body').style.display = 'block';
+  loadQuestion();
+}
+
+function toggleInfo(id, btn) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('active');
+  el.classList.toggle('active');
+  btn.textContent = isOpen ? 'Подробнее ▸' : 'Свернуть ▴';
+}
+
+const emailData = {
+  1: { safe: true,  url: "mail.sberbank.ru — ✓ Безопасный отправитель" },
+  2: { safe: false, url: "⚠ sber-bank-alert.ru — ФИШИНГОВЫЙ сайт!" },
+  3: { safe: true,  url: "mail.gosuslugi.ru — ✓ Официальный портал" },
+  4: { safe: false, url: "⚠ vk-winner2024.com — МОШЕННИЧЕСКИЙ сайт!" }
+};
+
+let revealedCount = 0;
+
+function revealEmail(num) {
+  const card = document.getElementById('email' + num);
+  if (card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  revealedCount++;
+
+  const data = emailData[num];
+  const urlEl = document.getElementById('sim-url');
+  urlEl.textContent = data.url;
+  urlEl.className = 'sim-url' + (data.safe ? '' : ' url-warning');
+
+  if (revealedCount === 4) {
+    document.getElementById('sim-instruction').textContent = '🎉 Отлично! Ты проверил все письма. Всегда будь внимателен к адресам отправителей!';
+    document.getElementById('sim-instruction').style.borderColor = 'var(--green)';
+    document.getElementById('sim-instruction').style.color = 'var(--green)';
+  }
+}
+
+function animateCounter(el, target, suffix, duration) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = Math.floor(start) + suffix;
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+setTimeout(() => {
+  animateCounter(document.getElementById('counter1'), 6, '', 1200);
+  animateCounter(document.getElementById('counter2'), 10, '', 1200);
+}, 800);
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+loadQuestion();
+</script>
+</body>
+</html>
